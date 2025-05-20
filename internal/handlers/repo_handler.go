@@ -13,23 +13,23 @@ func CreateRepo(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil || req.Name == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "nome do repositório é obrigatório"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "required repo name"})
 		return
 	}
 
 	client, ctx, err := services.NewGitHubClient()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao criar cliente GitHub", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error creating GitHub Client", "details": err.Error()})
 		return
 	}
 
 	err = services.CreateRepository(client, ctx, req.Name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao criar repositório", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error creating repo", "details": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "repositório criado com sucesso"})
+	c.JSON(http.StatusCreated, gin.H{"message": "successfully created repo"})
 }
 
 func DeleteRepo(c *gin.Context) {
@@ -37,35 +37,35 @@ func DeleteRepo(c *gin.Context) {
 	repo := c.Param("repo")
 
 	if owner == "" || repo == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "owner e repo são obrigatórios"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "owner and repo are mandatory"})
 		return
 	}
 
 	client, ctx, err := services.NewGitHubClient()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao criar cliente GitHub", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error creating GitHub Client", "details": err.Error()})
 		return
 	}
 
 	err = services.DeleteRepository(client, ctx, owner, repo)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao apagar repositório", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error deleting repo", "details": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "repositório removido com sucesso"})
+	c.JSON(http.StatusOK, gin.H{"message": "successfully deleted repo"})
 }
 
 func ListRepos(c *gin.Context) {
 	client, ctx, err := services.NewGitHubClient()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao criar cliente GitHub", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error creating GitHub Client", "details": err.Error()})
 		return
 	}
 
 	repos, err := services.ListRepositories(client, ctx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao listar repositórios", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error listing repos", "details": err.Error()})
 		return
 	}
 

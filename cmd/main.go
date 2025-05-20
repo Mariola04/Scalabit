@@ -10,7 +10,7 @@ import (
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Erro ao carregar .env")
+		log.Fatal("Error loading .env")
 	}
 }
 
@@ -26,6 +26,6 @@ func main() {
 	router.GET("/repos/:owner/:repo/pulls", handlers.ListPullRequests)
 
 	// Initialize Port (8080)
-	log.Println("Servidor iniciado em http://localhost:8080")
+	log.Println("Server initialized on http://localhost:8080")
 	router.Run(":8080")
 }

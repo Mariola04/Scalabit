@@ -15,19 +15,19 @@ func ListPullRequests(c *gin.Context) {
 
 	n, err := strconv.Atoi(nStr)
 	if err != nil || n <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "parâmetro 'n' inválido"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid 'n'"})
 		return
 	}
 
 	client, ctx, err := services.NewGitHubClient()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao criar cliente GitHub", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error creating GitHub client", "details": err.Error()})
 		return
 	}
 
 	prs, err := services.ListOpenPullRequests(client, ctx, owner, repo, n)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao listar PRs", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "erros listing public repos", "details": err.Error()})
 		return
 	}
 
