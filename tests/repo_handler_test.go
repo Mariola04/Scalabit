@@ -17,7 +17,7 @@ func TestCreateRepo_InvalidInput(t *testing.T) {
 	router := gin.Default()
 	router.POST("/repos", handlers.CreateRepo)
 
-	body := []byte(`{}`) // Faltando "name"
+	body := []byte(`{}`) 
 	req, _ := http.NewRequest(http.MethodPost, "/repos", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 

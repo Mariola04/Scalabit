@@ -11,7 +11,7 @@ import (
 
 var ErrMissingToken = errors.New("GITHUB_TOKEN not defined")
 
-// NewGitHubClient cria o cliente autenticado com o token
+// NewGitHubClient creates client authenticated with token
 func NewGitHubClient() (*github.Client, context.Context, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
@@ -25,8 +25,6 @@ func NewGitHubClient() (*github.Client, context.Context, error) {
 
 	return client, ctx, nil
 }
-
-// Funções que usam o cliente fornecido:
 
 func CreateRepository(client *github.Client, ctx context.Context, name string) error {
 	repo := &github.Repository{
