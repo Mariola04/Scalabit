@@ -27,7 +27,7 @@ func ListPullRequests(c *gin.Context) {
 
 	prs, err := services.ListOpenPullRequests(client, ctx, owner, repo, n)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erros listing public repos", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error listing public repos", "details": err.Error()})
 		return
 	}
 
