@@ -2,31 +2,34 @@ package services
 
 import (
 	"context"
+	"errors"
+	
 	"os"
 
 	"github.com/google/go-github/v55/github"
 	"golang.org/x/oauth2"
 )
 
-var (
-	client *github.Client
-	ctx    context.Context
-)
+var ErrMissingToken = errors.New("GITHUB_TOKEN not defined")
 
-func init() {
+// NewGitHubClient cria o cliente autenticado com o token
+func NewGitHubClient() (*github.Client, context.Context, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
-		panic("GITHUB_TOKEN not defined on .env")
+		return nil, nil, ErrMissingToken
 	}
 
-	ctx = context.Background()
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
-	client = github.NewClient(tc)
+	client := github.NewClient(tc)
+
+	return client, ctx, nil
 }
 
+// Funções que usam o cliente fornecido:
 
-func CreateRepository(name string) error {
+func CreateRepository(client *github.Client, ctx context.Context, name string) error {
 	repo := &github.Repository{
 		Name:    github.String(name),
 		Private: github.Bool(false),
@@ -35,18 +38,17 @@ func CreateRepository(name string) error {
 	return err
 }
 
-func DeleteRepository(owner, repo string) error {
+func DeleteRepository(client *github.Client, ctx context.Context, owner, repo string) error {
 	_, err := client.Repositories.Delete(ctx, owner, repo)
 	return err
 }
 
-func ListRepositories() ([]*github.Repository, error) {
+func ListRepositories(client *github.Client, ctx context.Context) ([]*github.Repository, error) {
 	repos, _, err := client.Repositories.List(ctx, "", nil)
 	return repos, err
 }
 
-// ListOpenPullRequests returns N pull requests open on a repo
-func ListOpenPullRequests(owner, repo string, n int) ([]*github.PullRequest, error) {
+func ListOpenPullRequests(client *github.Client, ctx context.Context, owner, repo string, n int) ([]*github.PullRequest, error) {
 	opts := &github.PullRequestListOptions{
 		State: "open",
 		ListOptions: github.ListOptions{

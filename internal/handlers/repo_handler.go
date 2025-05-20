@@ -17,7 +17,13 @@ func CreateRepo(c *gin.Context) {
 		return
 	}
 
-	err := services.CreateRepository(req.Name)
+	client, ctx, err := services.NewGitHubClient()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao criar cliente GitHub", "details": err.Error()})
+		return
+	}
+
+	err = services.CreateRepository(client, ctx, req.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao criar repositório", "details": err.Error()})
 		return
@@ -35,7 +41,13 @@ func DeleteRepo(c *gin.Context) {
 		return
 	}
 
-	err := services.DeleteRepository(owner, repo)
+	client, ctx, err := services.NewGitHubClient()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao criar cliente GitHub", "details": err.Error()})
+		return
+	}
+
+	err = services.DeleteRepository(client, ctx, owner, repo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao apagar repositório", "details": err.Error()})
 		return
@@ -45,7 +57,13 @@ func DeleteRepo(c *gin.Context) {
 }
 
 func ListRepos(c *gin.Context) {
-	repos, err := services.ListRepositories()
+	client, ctx, err := services.NewGitHubClient()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao criar cliente GitHub", "details": err.Error()})
+		return
+	}
+
+	repos, err := services.ListRepositories(client, ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao listar repositórios", "details": err.Error()})
 		return

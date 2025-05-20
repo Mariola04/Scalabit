@@ -8,7 +8,6 @@ import (
 	"github.com/Mariola04/Scalabit/internal/services"
 )
 
-// ListPullRequests returns N pull requests open on a repo
 func ListPullRequests(c *gin.Context) {
 	owner := c.Param("owner")
 	repo := c.Param("repo")
@@ -16,13 +15,19 @@ func ListPullRequests(c *gin.Context) {
 
 	n, err := strconv.Atoi(nStr)
 	if err != nil || n <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid 'n'"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "parâmetro 'n' inválido"})
 		return
 	}
 
-	prs, err := services.ListOpenPullRequests(owner, repo, n)
+	client, ctx, err := services.NewGitHubClient()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "error listing pull requests", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao criar cliente GitHub", "details": err.Error()})
+		return
+	}
+
+	prs, err := services.ListOpenPullRequests(client, ctx, owner, repo, n)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao listar PRs", "details": err.Error()})
 		return
 	}
 

@@ -1,17 +1,20 @@
 package main
 
 import (
+	
 	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/Mariola04/Scalabit/internal/handlers"
 )
 
-func main() {
-	// Loads .env
+func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env")
+		log.Fatal("Erro ao carregar .env")
 	}
+}
+
+func main() {
 
 	// Initializes HTTP
 	router := gin.Default()
