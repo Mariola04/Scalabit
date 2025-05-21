@@ -1,90 +1,104 @@
-# GitHub Manager API – Scalabit Challenge
 
-This project implements a REST API in Go to manage GitHub repositories and pull requests, with a focus on clean code, proper structure, testing, and CI/CD.
+# Scalabit GitHub API Challenge
 
-## Features
+This project implements a RESTful API in **Go** that interacts with the GitHub API to:
 
-- `POST /repos`: Create a new public repository
-- `DELETE /repos/:owner/:repo`: Delete an existing repository
-- `GET /repos`: List all repositories of the authenticated user
-- `GET /repos/:owner/:repo/pulls?n=N`: List the N most recent open pull requests on a repository
+- Create repositories
+- Delete repositories
+- List repositories
+- List N open pull requests on a specific repository
 
-## Tech Stack
+It also includes a full CI/CD pipeline using **GitHub Actions**, with:
 
-- Language: **Go**
-- Web Framework: **Gin**
-- GitHub API Client: **go-github**
-- Environment: **godotenv**
-- Testing: **Go testing + Testify**
-- CI/CD: **GitHub Actions** (to be added)
+- Unit tests
+- Linting (`staticcheck`)
+- Security scanning (`gosec`)
+- Deployment placeholder
 
-## Project Structure
+---
 
-```
-github-manager/
-├── cmd/                # Entry point (main.go)
-├── internal/
-│   ├── handlers/       # HTTP route handlers
-│   └── services/       # GitHub API client logic
-├── tests/              # Unit and integration tests
-├── go.mod / go.sum     # Go dependencies
-├── .env                # Local GitHub token (not committed)
-└── README.md
-```
+## How to run locally
 
-## Authentication
+1. **Set your GitHub token**
 
-You must provide a GitHub Personal Access Token in a `.env` file:
+Create a `.env` file:
 
 ```env
-GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxx
+GITHUB_TOKEN=your_personal_access_token
 ```
 
-> You can generate one [here](https://github.com/settings/tokens) (Fine-grained access, with `repo` and `delete_repo` permissions).
+> Make sure the token has repo permissions.
 
-## Running the API
+2. **Run the project**
 
 ```bash
 go run cmd/main.go
 ```
 
-The server runs by default at `http://localhost:8080`.
+3. **Use curl or Postman** to call:
 
-## Running Tests
+- `GET /repos` → list your repositories
+- `POST /repos` with JSON `{ "name": "my-repo" }` → create a repository
+- `DELETE /repos/:owner/:repo` → delete a repository
+- `GET /repos/:owner/:repo/pulls?n=3` → list 3 open PRs
+
+---
+
+## GitHub Actions CI/CD
+
+This repo includes a complete pipeline under `.github/workflows/go.yml`.
+
+It performs:
+
+- `go test`
+- `staticcheck`
+- `gosec`
+- Deployment step on main branch (currently a placeholder)
+
+---
+
+## Tests
+
+Tests are located under `/tests` and can be run locally with:
 
 ```bash
 go test ./tests -v
 ```
 
-### Sample test coverage:
-- Invalid input
-- Missing route params
-- Invalid query strings
-- Token errors
+---
 
-## Example Requests
+## Security
 
-### Create a repo
+I used [gosec](https://github.com/securego/gosec) to catch security issues like:
 
-```bash
-curl -X POST http://localhost:8080/repos   -H "Content-Type: application/json"   -d '{"name": "my-new-repo"}'
+- Unhandled errors
+- Insecure function use
+- Credential leakage
+
+---
+
+## Status
+
+![Go](https://github.com/Mariola04/Scalabit/actions/workflows/go.yml/badge.svg)
+
+---
+
+## Structure
+
 ```
-
-### Delete a repo
-
-```bash
-curl -X DELETE http://localhost:8080/repos/<owner>/<repo>
-```
-
-### List pull requests
-
-```bash
-curl "http://localhost:8080/repos/<owner>/<repo>/pulls?n=3"
+.
+├── cmd/                 # main entry point
+├── internal/
+│   ├── handlers/        # HTTP handlers
+│   └── services/        # GitHub API logic
+├── tests/               # Test files
+├── .github/workflows/   # CI pipeline
+└── README.md
 ```
 
 ---
 
 
-## 👤 Author
+## Author
 
-Created by [Mario (Mariola04)](https://github.com/Mariola04) as part of the Scalabit technical challenge.
+Created by Mario (Mariola04) as part of the Scalabit technical challenge.
