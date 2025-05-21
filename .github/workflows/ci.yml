@@ -38,10 +38,12 @@ jobs:
         version: latest
 
     # Security analysis
-    - name: Run security scan (gosec)
-      uses: securego/gosec@master
-      with:
-        args: ./...
+    - name: Install gosec
+      run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+    - name: Run gosec security scan
+      run: gosec ./...
+
 
     # Deploy (example: push Docker image or call deploy script)
     - name: Deploy step (mock example)
