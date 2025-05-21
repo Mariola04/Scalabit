@@ -15,7 +15,6 @@ func init() {
 }
 
 func main() {
-
 	// Initializes HTTP
 	router := gin.Default()
 
@@ -27,5 +26,9 @@ func main() {
 
 	// Initialize Port (8080)
 	log.Println("Server initialized on http://localhost:8080")
-	router.Run(":8080")
+
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
+
