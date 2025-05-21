@@ -11,37 +11,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout repo
+    #  Checkout repo
     - name: Checkout repository
       uses: actions/checkout@v3    # clones repo into the runner so the workflow can work with my code.
 
-    # 2. Setup Go
+    # Setup Go
     - name: Setup Go
       uses: actions/setup-go@v4
       with:
         go-version: 1.20
+    
+    - name: Confirm Go version
+      run: go version
 
-    # 3. Install dependencies
+    # Install dependencies
     - name: Download dependencies
       run: go mod tidy
 
-    # 4. Run unit tests
+    # Run unit tests
     - name: Run tests
       run: go test ./... -v
 
-    # 5. Lint code
+    # Lint code
     - name: Run linter (staticcheck)
       uses: dominikh/staticcheck-action@v1
       with:
         version: latest
 
-    # 6. Security analysis
+    # Security analysis
     - name: Run security scan (gosec)
       uses: securego/gosec@master
       with:
         args: ./...
 
-    # 7. Deploy (example: push Docker image or call deploy script)
+    # Deploy (example: push Docker image or call deploy script)
     - name: Deploy step (mock example)
       if: github.ref == 'refs/heads/main'
-      run: echo "Deploying application (add your logic here)"
+      run: echo "Deploying application (add something for depleymente (to do))"
